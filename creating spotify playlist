@@ -1,0 +1,53 @@
+from bs4 import BeautifulSoup
+import requests
+import lxml
+# geetting top playlist of hip hop tamizha using gana
+header = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0"}
+response=requests.get(url="https://gaana.com/playlist/gaana-dj-best-of-hip-hop-thamizha")
+content=response.text
+soup=BeautifulSoup(content,'lxml')
+mn=soup.findAll(name='h3',class_="c-title a-no-trucate a-font-primary-bold-s u-letter-spacing-0021 lrv-u-font-size-18@tablet lrv-u-font-size-16 u-line-height-125 u-line-height-normal@mobile-max a-truncate-ellipsis u-max-width-330 u-max-width-230@tablet-only", id="title-of-a-story")
+for i in mn:
+    print(i.string)
+mn=soup.findAll(name='span',class_="t_over")
+songn=[]
+for a in mn:
+
+    d = a.getText()
+    du = d.split()
+    du.remove(du[0])
+
+    sn = ''
+    for t in du:
+        sn += t
+        sn += " "
+    songn.append(sn)
+
+# adding song and create playlist
+spotifyclientid="your spotify ci"
+clientsecret="your own"
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+scope = "user-library-read"
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=spotifyclientid,client_secret=clientsecret,redirect_uri="https://example.com/",cache_path="token.txt",show_dialog=True,scope="playlist-modify-private",username="your "))
+dummy=sp.current_user()
+userid=dummy["id"]
+surl=[]
+
+
+
+
+for name in songn:
+
+    t = sp.search(q=f"track:{name}", type='track')
+    try:
+        urld = t["tracks"]["items"][0]["external_urls"]["spotify"]
+        surl.append(urld)
+    except IndexError:
+        print(name)
+playlist=sp.user_playlist_create(user=userid,name="top100hhtl",public=False)
+
+
+pid=playlist["id"]
+
+sp.playlist_add_items(playlist_id=pid, items=surl)
