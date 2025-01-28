@@ -1,0 +1,29 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import  NoSuchElementException
+import time
+do=webdriver.ChromeOptions()
+do.add_experimental_option("detach",True)
+driver=webdriver.Chrome(options=do)
+driver.get(url="https://www.linkedin.com/jobs/search/?f_LF=f_AL&geoId=102257491&keywords=python%20developer&location=London%2C%20England%2C%20United%20Kingdom&redirect=false&position=1&pageNum=0")
+sb=driver.find_element(By.CSS_SELECTOR,value="#base-contextual-sign-in-modal > div > section > div > div > div > div.sign-in-modal > button")
+sb.click()
+einp=driver.find_element(By.CSS_SELECTOR,value="#base-sign-in-modal_session_key")
+einp.send_keys("your mail")
+pinp=driver.find_element(By.CSS_SELECTOR,value="#base-sign-in-modal_session_password")
+pinp.send_keys("your password")
+sgnupb=driver.find_element(By.CSS_SELECTOR,value="#base-sign-in-modal > div > section > div > div > form > div.flex.justify-between.sign-in-form__footer--full-width > button")
+sgnupb.click()
+now=time.time()
+aft2m=now+120
+a=True
+while(a):
+    if time.time()>=aft2m:
+        a=False
+        appjb1 = driver.find_element(By.CSS_SELECTOR, value="jobs-apply-button--top-card")
+        appjb1.click()
+
+
+
+
